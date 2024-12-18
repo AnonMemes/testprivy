@@ -1,33 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from 'react';
+
+import { usePrivy, useWallets, getEmbeddedConnectedWallet } from "@privy-io/react-auth";
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  // const { login } = useLogin({
+  //   onComplete: () => console.log("login complete"),
+  // });
+
+  const {ready, login, authenticated, logout, user } = usePrivy();
+  const { wallets } = useWallets();
+  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
+  //    embeddedWallet.address;
+  //    embeddedWallet.getEthersProvider().sendTransaction({...});
+  console.log(user);
+  // user.telegram
+  // user.wallet
+  // user.smartWallet
+
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="flex flex-col items-center justify-center 
+        h-screen container mx-auto
+        border border-teal-500
+        ">
+          <div className="my-2">{ready ? "privy is ready" : "privy is not ready"}</div>
+
+          {!authenticated ?
+            <button
+              className="bg-cyan-600 hover:bg-cyan-700 py-3 px-6 text-white rounded-lg"
+              onClick={login}
+            >
+              Log In
+            </button>
+            :
+
+            <div className="flex flex-col items-center justify-center">
+              <ul className="space-y-2">
+                <li>
+                  {embeddedWallet?.address ? `Embedded Wallet: ${embeddedWallet?.address}` : 'No Embedded Wallet'}
+                </li>
+                <li>
+                  {user?.wallet?.address ? `Evm Wallet: ${user?.wallet?.address}` : 'No Evm Wallet'}
+                </li>
+                <li>Telegram: {user?.telegram ? `user tg: ${user?.telegram.username}` : 'No Tg Username'}</li>
+                <li>
+                  <button className="bg-violet-600 hover:bg-violet-700 py-3 px-6 text-white rounded-lg"
+                    onClick={logout}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          }
+
+        </div>
     </>
   )
 }
