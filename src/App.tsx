@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { usePrivy, useWallets, getEmbeddedConnectedWallet } from "@privy-io/react-auth";
 
